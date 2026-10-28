@@ -1,0 +1,74 @@
+# Laravel Storage CLI
+
+Read-only Artisan commands for exploring Laravel filesystem disks (local, S3, FTP, and other Flysystem adapters). List files, inspect metadata, print content, generate URLs, and download files without opening Tinker.
+
+## Requirements
+
+- PHP 8.2+
+- Laravel 11, 12, or 13
+
+## Installation
+
+```bash
+composer require jeremy379/laravel-storage-cli
+```
+
+Laravel discovers the service provider automatically. Use `--dev` with Composer if these commands are only needed in development.
+
+## Usage
+
+```bash
+# Show configured disks
+php artisan storage:ls
+
+# List a directory, including remote S3 disks
+php artisan storage:ls s3:invoices/2026
+php artisan storage:ls --disk=s3 invoices/2026
+
+# Recursive, detailed, and JSON output
+php artisan storage:ls s3:invoices --recursive --long
+php artisan storage:ls s3:invoices --json
+
+# Print a small text file (1 MiB limit by default)
+php artisan storage:cat s3:logs/latest.log
+php artisan storage:cat s3:logs/latest.log --max-bytes=5000000
+
+# Generate a public URL or a temporary URL
+php artisan storage:url s3:invoices/123.pdf
+php artisan storage:url s3:invoices/123.pdf --expires=15
+
+# Download to the machine running Artisan
+php artisan storage:get s3:invoices/123.pdf ./invoice.pdf
+php artisan storage:get s3:invoices/123.pdf ./invoice.pdf --force
+
+# Inspect metadata
+php artisan storage:stat s3:invoices/123.pdf
+php artisan storage:stat s3:invoices/123.pdf --json
+```
+
+Use `disk:path` or `--disk=name` with a relative path. Without either, the configured default disk is used (except `storage:ls` without arguments, which lists the available disks).
+
+## Behavior and safety
+
+- All commands are **read-only on the Laravel disks**. `storage:get` writes only to the selected local destination.
+- `storage:get` streams a file to a temporary local file and moves it into place only after transfer succeeds. Existing destinations require `--force`.
+- The download destination is on **the machine running Artisan**. When you run the command over SSH, it saves the file on the server.
+- `storage:cat` writes raw bytes to stdout: avoid printing binary files to a terminal. The default 1 MiB limit can be raised with `--max-bytes` or bypassed using `--force`.
+- `storage:url` without `--expires` uses Laravel's configured `url()` implementation. It does **not** make private files public. The `--expires` option requires a disk supporting temporary URLs.
+- Signed URLs may grant access until they expire. Handle them as sensitive.
+- Recursive listings can be expensive on large cloud buckets. Prefer a narrow directory.
+- Paths containing a `..` segment are rejected.
+- Disk credentials and configuration come from the Laravel application. No extra configuration is needed.
+
+## Development
+
+```bash
+composer install
+composer test
+```
+
+The tests use Orchestra Testbench; GitHub Actions covers supported PHP/Laravel combinations.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
