@@ -53,6 +53,26 @@ php artisan storage:stat s3:invoices/123.pdf --json
 
 Use `disk:path` or `--disk=name` with a relative path. Without either, the configured default disk is used (except `storage:ls` without arguments, which lists the available disks).
 
+## Shell autocompletion
+
+Enable Symfony Console's shell completion for your Laravel application (Bash, Zsh, or Fish). Run `php artisan completion --help` for shell-specific installation instructions.
+
+Once configured, pressing Tab suggests:
+
+- Configured disk names after `--disk=` (for example, `--disk=s3`).
+- Disk prefixes in the location argument (for example, `s3:`).
+- Files and folders within the selected disk, including remote disks such as S3. Folder suggestions end with `/`.
+
+Examples:
+
+```bash
+php artisan storage:ls s3:inv<TAB>
+php artisan storage:cat --disk=s3 reports/hel<TAB>
+php artisan storage:get s3:invoices/2026/<TAB>
+```
+
+Directory suggestions are non-recursive and limited to 50 results from at most 500 scanned entries. Completing a remote disk may involve a network request and its associated latency or API charges. Unavailable disks do not interrupt shell completion.
+
 ## Behavior and safety
 
 - All commands are **read-only on the Laravel disks**. `storage:get` writes only to the selected local destination.
