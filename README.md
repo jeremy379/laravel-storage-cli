@@ -9,14 +9,13 @@ Read-only Artisan commands for exploring Laravel filesystem disks (local, S3, FT
 
 ## Installation
 
-Until the package is registered on Packagist, install the development branch directly from GitHub:
+The package is available on [Packagist](https://packagist.org/packages/jeremy379/laravel-storage-cli). Until a stable version is tagged, install the development branch:
 
 ```bash
-composer config repositories.laravel-storage-cli vcs https://github.com/jeremy379/laravel-storage-cli
 composer require jeremy379/laravel-storage-cli:dev-main
 ```
 
-Once published on Packagist with a stable release, installation will simply be `composer require jeremy379/laravel-storage-cli`.
+Once a stable release is tagged, installation will simply be `composer require jeremy379/laravel-storage-cli`.
 
 Laravel discovers the service provider automatically. Use `--dev` with Composer if these commands are only needed in development.
 
