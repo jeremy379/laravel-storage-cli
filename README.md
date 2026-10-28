@@ -67,7 +67,7 @@ composer install
 composer test
 ```
 
-The tests use Orchestra Testbench; GitHub Actions covers supported PHP/Laravel combinations.
+The tests use Orchestra Testbench. GitHub Actions tests Laravel 12 and 13. Laravel 11 remains allowed for existing projects, but its available releases are currently blocked by Composer security advisories, so CI does not install it.
 
 ## License
 

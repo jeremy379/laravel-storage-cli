@@ -13,6 +13,11 @@ final class CommandsTest extends TestCase
     {
         parent::setUp();
 
+        config()->set('filesystems.disks.fixture', [
+            'driver' => 'local',
+            'root' => storage_path('framework/testing/disks/fixture'),
+        ]);
+
         Storage::fake('fixture');
         Storage::disk('fixture')->put('reports/hello.txt', 'Hello from the filesystem!');
         Storage::disk('fixture')->put('reports/nested/second.txt', 'Nested file');

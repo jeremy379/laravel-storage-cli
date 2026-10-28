@@ -14,6 +14,11 @@ final class DiskPathTest extends TestCase
     {
         parent::setUp();
 
+        config()->set('filesystems.disks.fixture', [
+            'driver' => 'local',
+            'root' => storage_path('framework/testing/disks/fixture'),
+        ]);
+
         Storage::fake('fixture');
     }
 
