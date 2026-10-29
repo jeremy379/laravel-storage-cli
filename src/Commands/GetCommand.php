@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jeremy379\LaravelStorageCli\Commands;
 
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
+use Jeremy379\LaravelStorageCli\Exceptions\StorageCliException;
 
 final class GetCommand extends StorageCommand
 {
@@ -30,17 +30,17 @@ final class GetCommand extends StorageCommand
             $directory = dirname($destination);
 
             if (! is_dir($directory) || ! is_writable($directory)) {
-                throw new RuntimeException('The destination directory does not exist or is not writable.');
+                throw new StorageCliException('The destination directory does not exist or is not writable.');
             }
 
             if (file_exists($destination) && ! $this->option('force')) {
-                throw new RuntimeException('The destination already exists; use --force to overwrite it.');
+                throw new StorageCliException('The destination already exists; use --force to overwrite it.');
             }
 
             $source = Storage::disk($target->disk)->readStream($target->path);
 
             if (! is_resource($source)) {
-                throw new RuntimeException('Unable to open the remote file.');
+                throw new StorageCliException('Unable to open the remote file.');
             }
 
             $temporary = null;
@@ -49,27 +49,27 @@ final class GetCommand extends StorageCommand
                 $temporary = tempnam($directory, '.storage-cli-');
 
                 if ($temporary === false) {
-                    throw new RuntimeException('Unable to create a temporary local file.');
+                    throw new StorageCliException('Unable to create a temporary local file.');
                 }
 
                 $output = fopen($temporary, 'wb');
 
                 if ($output === false) {
-                    throw new RuntimeException('Unable to write the temporary local file.');
+                    throw new StorageCliException('Unable to write the temporary local file.');
                 }
 
                 try {
                     $bytes = stream_copy_to_stream($source, $output);
 
                     if ($bytes === false) {
-                        throw new RuntimeException('The download did not complete.');
+                        throw new StorageCliException('The download did not complete.');
                     }
                 } finally {
                     fclose($output);
                 }
 
                 if (! rename($temporary, $destination)) {
-                    throw new RuntimeException('Unable to move the downloaded file into place.');
+                    throw new StorageCliException('Unable to move the downloaded file into place.');
                 }
 
                 $this->info(sprintf('Downloaded %d bytes to %s', $bytes, $destination));

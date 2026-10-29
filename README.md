@@ -5,7 +5,7 @@ Read-only Artisan commands for exploring Laravel filesystem disks (local, S3, FT
 ## Requirements
 
 - PHP 8.2+
-- Laravel 11, 12, or 13
+- Laravel 12 or 13
 
 ## Installation
 
@@ -50,7 +50,7 @@ php artisan storage:stat s3:invoices/123.pdf
 php artisan storage:stat s3:invoices/123.pdf --json
 ```
 
-Use `disk:path` or `--disk=name` with a relative path. Without either, the configured default disk is used (except `storage:ls` without arguments, which lists the available disks).
+Use `disk:path` or `--disk=name` with a relative path. Without either, the configured default disk is used (except `storage:ls` without arguments, which lists the available disks). When a storage path contains a colon, use `--disk`; an explicit disk makes the entire location a literal path.
 
 ## Shell autocompletion
 
@@ -91,7 +91,7 @@ composer install
 composer test
 ```
 
-The tests use Orchestra Testbench. GitHub Actions tests Laravel 12 and 13. Laravel 11 remains allowed for existing projects, but its available releases are currently blocked by Composer security advisories, so CI does not install it.
+The tests use Orchestra Testbench. GitHub Actions tests Laravel 12 and 13.
 
 ## License
 

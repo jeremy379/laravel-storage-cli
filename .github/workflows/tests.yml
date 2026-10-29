@@ -12,7 +12,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Laravel 11 is excluded from CI because all available releases are blocked by Composer security advisories.
           - php: '8.2'
             laravel: '^12.0'
             testbench: '^10.0'

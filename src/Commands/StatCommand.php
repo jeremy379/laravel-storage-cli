@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Jeremy379\LaravelStorageCli\Commands;
 
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
-use Throwable;
+use Jeremy379\LaravelStorageCli\Exceptions\StorageCliException;
+use League\Flysystem\FilesystemException;
 
 final class StatCommand extends StorageCommand
 {
@@ -24,7 +24,7 @@ final class StatCommand extends StorageCommand
             $filesystem = Storage::disk($target->disk);
 
             if (! $filesystem->exists($target->path)) {
-                throw new RuntimeException('The file does not exist.');
+                throw new StorageCliException('The file does not exist.');
             }
 
             $metadata = [
@@ -38,7 +38,7 @@ final class StatCommand extends StorageCommand
 
             try {
                 $metadata['visibility'] = $filesystem->visibility($target->path);
-            } catch (Throwable) {
+            } catch (FilesystemException) {
                 // Some filesystem adapters do not expose visibility.
             }
 

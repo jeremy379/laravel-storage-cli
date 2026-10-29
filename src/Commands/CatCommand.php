@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jeremy379\LaravelStorageCli\Commands;
 
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
+use Jeremy379\LaravelStorageCli\Exceptions\StorageCliException;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class CatCommand extends StorageCommand
@@ -26,17 +26,17 @@ final class CatCommand extends StorageCommand
             $limit = filter_var($this->option('max-bytes'), FILTER_VALIDATE_INT);
 
             if ($limit === false || $limit < 1) {
-                throw new RuntimeException('--max-bytes must be a positive integer.');
+                throw new StorageCliException('--max-bytes must be a positive integer.');
             }
 
             if (! $this->option('force') && $filesystem->size($target->path) > $limit) {
-                throw new RuntimeException('File exceeds --max-bytes; increase the limit or use --force.');
+                throw new StorageCliException('File exceeds --max-bytes; increase the limit or use --force.');
             }
 
             $stream = $filesystem->readStream($target->path);
 
             if (! is_resource($stream)) {
-                throw new RuntimeException('Unable to open the remote file.');
+                throw new StorageCliException('Unable to open the remote file.');
             }
 
             try {
@@ -44,7 +44,7 @@ final class CatCommand extends StorageCommand
                     $chunk = fread($stream, 8192);
 
                     if ($chunk === false) {
-                        throw new RuntimeException('Failed while reading the remote file.');
+                        throw new StorageCliException('Failed while reading the remote file.');
                     }
 
                     $this->output->write($chunk, false, OutputInterface::OUTPUT_RAW);

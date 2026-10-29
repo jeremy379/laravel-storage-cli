@@ -20,6 +20,7 @@ final class CommandsTest extends TestCase
 
         Storage::fake('fixture');
         Storage::disk('fixture')->put('reports/hello.txt', 'Hello from the filesystem!');
+        Storage::disk('fixture')->put('reports/2026-10-29T08:10:30.log', 'Timestamped file');
         Storage::disk('fixture')->put('reports/nested/second.txt', 'Nested file');
     }
 
@@ -62,6 +63,16 @@ final class CommandsTest extends TestCase
         ]));
 
         $this->assertSame('Hello from the filesystem!', Artisan::output());
+    }
+
+    public function test_it_treats_the_location_as_literal_when_a_disk_option_is_used(): void
+    {
+        $this->assertSame(0, Artisan::call('storage:cat', [
+            'location' => 'reports/2026-10-29T08:10:30.log',
+            '--disk' => 'fixture',
+        ]));
+
+        $this->assertSame('Timestamped file', Artisan::output());
     }
 
     public function test_it_respects_cat_size_limit(): void
