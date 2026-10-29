@@ -22,6 +22,7 @@ final class CompletionTest extends TestCase
 
         Storage::fake('fixture');
         Storage::disk('fixture')->put('reports/hello.txt', 'Hello');
+        Storage::disk('fixture')->put('reports/2026-10-29T08:10:30.log', 'Timestamped file');
         Storage::disk('fixture')->put('reports/nested/other.txt', 'Other');
     }
 
@@ -40,6 +41,14 @@ final class CompletionTest extends TestCase
     public function test_it_uses_the_selected_disk(): void
     {
         $this->assertContains('reports/hello.txt', StorageCompletion::paths('reports/h', 'fixture'));
+    }
+
+    public function test_it_completes_colon_paths_on_an_explicit_disk(): void
+    {
+        $this->assertContains(
+            'reports/2026-10-29T08:10:30.log',
+            StorageCompletion::paths('reports/2026-10-29T08:', 'fixture'),
+        );
     }
 
     public function test_it_ignores_unavailable_disks(): void

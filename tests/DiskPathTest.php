@@ -38,11 +38,12 @@ final class DiskPathTest extends TestCase
         $this->assertSame('reports/file.csv', $target->path);
     }
 
-    public function test_it_rejects_conflicting_disks(): void
+    public function test_an_explicit_disk_treats_a_colon_as_part_of_the_path(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $target = DiskPath::parse('archive:report.csv', 'fixture');
 
-        DiskPath::parse('fixture:file.csv', 'local');
+        $this->assertSame('fixture', $target->disk);
+        $this->assertSame('archive:report.csv', $target->path);
     }
 
     public function test_it_rejects_parent_directory_traversal(): void

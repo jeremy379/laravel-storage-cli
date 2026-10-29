@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jeremy379\LaravelStorageCli\Commands;
 
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
+use Jeremy379\LaravelStorageCli\Exceptions\StorageCliException;
 
 final class UrlCommand extends StorageCommand
 {
@@ -30,11 +30,11 @@ final class UrlCommand extends StorageCommand
             }
 
             if (! ctype_digit((string) $minutes) || (int) $minutes < 1) {
-                throw new RuntimeException('--expires must be a positive number of minutes.');
+                throw new StorageCliException('--expires must be a positive number of minutes.');
             }
 
             if (! $filesystem->providesTemporaryUrls()) {
-                throw new RuntimeException('The selected disk does not support temporary URLs.');
+                throw new StorageCliException('The selected disk does not support temporary URLs.');
             }
 
             $this->line($filesystem->temporaryUrl($target->path, now()->addMinutes((int) $minutes)));

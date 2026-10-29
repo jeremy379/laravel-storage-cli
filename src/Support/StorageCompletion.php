@@ -44,7 +44,7 @@ final class StorageCompletion
 
         try {
             $target = DiskPath::parse($partial, $diskOption);
-            $colon = strpos($partial, ':');
+            $colon = ($diskOption === null || $diskOption === '') ? strpos($partial, ':') : false;
             $prefix = $colon === false ? '' : substr($partial, 0, $colon + 1);
 
             $slash = strrpos($target->path, '/');

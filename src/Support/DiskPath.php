@@ -18,11 +18,9 @@ final readonly class DiskPath
     {
         $path = $location ?? '';
 
-        if (preg_match('/^([A-Za-z0-9_.-]+):(.*)$/s', $path, $matches) === 1) {
-            if ($diskOption !== null && $diskOption !== '' && $diskOption !== $matches[1]) {
-                throw new InvalidArgumentException('The disk in the path conflicts with --disk.');
-            }
-
+        if (($diskOption === null || $diskOption === '')
+            && preg_match('/^([A-Za-z0-9_.-]+):(.*)$/s', $path, $matches) === 1
+        ) {
             $diskOption = $matches[1];
             $path = $matches[2];
         }

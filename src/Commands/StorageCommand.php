@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Jeremy379\LaravelStorageCli\Commands;
 
 use Illuminate\Console\Command;
+use InvalidArgumentException;
+use Jeremy379\LaravelStorageCli\Exceptions\StorageCliException;
 use Jeremy379\LaravelStorageCli\Support\DiskPath;
 use Jeremy379\LaravelStorageCli\Support\StorageCompletion;
+use JsonException;
+use League\Flysystem\FilesystemException;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Throwable;
 
 abstract class StorageCommand extends Command
 {
@@ -42,7 +45,7 @@ abstract class StorageCommand extends Command
     {
         try {
             return $operation();
-        } catch (Throwable $exception) {
+        } catch (FilesystemException|InvalidArgumentException|JsonException|StorageCliException $exception) {
             $this->error($exception->getMessage());
 
             return self::FAILURE;
